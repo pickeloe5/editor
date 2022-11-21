@@ -1,0 +1,7 @@
+{
+  "main": "lib/index.js",
+  "scripts": {"start": "electron ."},
+  "devDependencies": {
+    "electron": "^21.3.0"
+  }
+}

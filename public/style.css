@@ -6,11 +6,15 @@ body {
 
 editor-console {
   display: block;
-  border: 1pt solid red;
   white-space: pre;
   user-select: none;
+  overflow: auto;
 }
 
 editor-console:focus {
   outline: none;
+}
+
+body editor-console {
+  height: 100%;
 }
