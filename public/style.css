@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  font-size: 20pt;
+  font-family: monospace;
+}
+
+editor-console {
+  display: block;
+  border: 1pt solid red;
+  white-space: pre;
+  user-select: none;
+}
+
+editor-console:focus {
+  outline: none;
+}
