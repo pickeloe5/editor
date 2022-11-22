@@ -9,10 +9,17 @@ editor-console {
   white-space: pre;
   user-select: none;
   overflow: auto;
+  background-color: black;
+  color: white;
 }
 
 editor-console:focus {
   outline: none;
+}
+
+.editor-cursor {
+  background-color: white;
+  color: black;
 }
 
 body editor-console {
