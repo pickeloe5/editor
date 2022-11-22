@@ -20,6 +20,24 @@ class EditorConsole extends ComponentBase {
   #cursor = 0
   #cursorNode = document.createElement('span')
 
+  get text() {return this.#text}
+  set text(text) {this.#text = text; this.#bake()}
+
+  get cursor() {
+    if (!this.#isFocused)
+      return null
+    return this.#cursor
+  }
+  set cursor(cursor) {
+    if (!this.#isFocused)
+      return;
+    this.#cursor =
+      Math.max(0,
+        Math.min(this.#text.length,
+          cursor))
+    this.#bake()
+  }
+
   constructor($) {
     super($)
 
@@ -36,25 +54,37 @@ class EditorConsole extends ComponentBase {
     $.focus()
   }
 
-  insertCharacter(character) {
+  withText(text) {
     if (!this.#isFocused)
       return;
     this.#text =
       this.#text.substring(0, this.#cursor) +
-      character +
+      text +
       this.#text.substring(this.#cursor)
-    this.#cursor++
+    this.#cursor += text.length
     this.#bake()
+    return this
   }
 
-  removeCharacter() {
+  withoutText(length = 1) {
     if (!this.#isFocused)
       return;
     this.#text =
-      this.#text.substring(0, this.#cursor - 1) +
+      this.#text.substring(0, this.#cursor - length) +
       this.#text.substring(this.#cursor)
-    this.#cursor--
+    this.#cursor = length > this.#cursor ? 0 : this.#cursor - length
     this.#bake()
+    return this
+  }
+
+  on(eventType, handler, options) {
+    this.#eventTarget.addEventListener(eventType, handler, options)
+    return this
+  }
+
+  off(eventType, handler, options) {
+    this.#eventTarget.removeEventListener(eventType, handler, options)
+    return this
   }
 
   #bake() {
@@ -104,7 +134,7 @@ class EditorConsole extends ComponentBase {
       return;
     switch (e.key) {
       case 'Backspace':
-        this.removeCharacter()
+        this.withoutText()
         return;
       case 'ArrowLeft':
         if (!this.#isFocused || !this.#cursor)
@@ -119,8 +149,8 @@ class EditorConsole extends ComponentBase {
         this.#bake()
         return;
       case 'Tab':
-        this.insertCharacter('\t')
         e.preventDefault()
+        this.withText('\t')
         return;
     }
   }
@@ -129,12 +159,12 @@ class EditorConsole extends ComponentBase {
     if (this.#dispatch(e).defaultPrevented)
       return;
     if (PRINTABLE.test(e.key)) {
-      this.insertCharacter(e.key)
+      this.withText(e.key)
       return;
     }
     switch (e.key) {
       case 'Enter':
-        this.insertCharacter('\n')
+        this.withText('\n')
         return;
     }
   }
