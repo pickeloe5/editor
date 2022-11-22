@@ -2,17 +2,6 @@ import {ComponentBase} from './fuffle.js'
 
 const PRINTABLE = /^[a-zA-Z0-9`~!@#$%^&*()\-_=+\[\]{}\\|;:'",.<>\/?\s]$/
 
-class WrappedEvent extends Event {
-  editorDefaultPrevented = false
-  constructor(e) {
-    super(e.type)
-    this.nativeEvent = e
-  }
-  preventEditorDefault() {
-    this.editorDefaultPrevented = true
-  }
-}
-
 class EditorConsole extends ComponentBase {
   static TAG_NAME = 'editor-console'
   static create(text) {
@@ -47,19 +36,12 @@ class EditorConsole extends ComponentBase {
       this.withText(this.#text.substring(0, this.#text.length - 1))
   }
   #dispatch(nativeEvent) {
-    const e = new WrappedEvent(nativeEvent)
+    const e = new Event(nativeEvent.type, {nativeEvent})
     this.#eventTarget.dispatchEvent(e)
     return e
   }
-  #isParent(node) {
-    if (!node)
-      return false
-    if (node === this.#element)
-      return true
-    return node === this.#element || this.#isParent(node.parentNode)
-  }
   #onKeyDown(e) {
-    if (this.#dispatch(e).editorDefaultPrevented)
+    if (this.#dispatch(e).defaultPrevented)
       return;
     switch (e.key) {
       case 'Backspace':
@@ -68,7 +50,7 @@ class EditorConsole extends ComponentBase {
     }
   }
   #onKeyPress(e) {
-    if (this.#dispatch(e).editorDefaultPrevented)
+    if (this.#dispatch(e).defaultPrevented)
       return;
     if (PRINTABLE.test(e.key)) {
       this.insertCharacter(e.key)
