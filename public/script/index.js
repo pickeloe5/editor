@@ -52,6 +52,8 @@ class EditorConsole extends ComponentBase {
     $.addEventListener('focus', _=>{this.#onFocus(_)})
     $.setAttribute('tabindex', '0')
     $.focus()
+
+    nativeApi.load().then(text => {this.text = text})
   }
 
   withText(text) {
@@ -158,6 +160,11 @@ class EditorConsole extends ComponentBase {
   #onKeyPress(e) {
     if (this.#dispatch(e).defaultPrevented)
       return;
+    if (e.key === 's' && e.ctrlKey) {
+      e.preventDefault()
+      nativeApi.save(this.#text)
+      return;
+    }
     if (PRINTABLE.test(e.key)) {
       this.withText(e.key)
       return;
