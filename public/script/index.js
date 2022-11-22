@@ -5,10 +5,6 @@ const PRINTABLE = /^[a-zA-Z0-9`~!@#$%^&*()\-_=+\[\]{}\\|;:'",.<>\/?\s]$/
 class EditorConsole extends ComponentBase {
 
   static TAG_NAME = 'editor-console'
-  static create(text) {
-    const instance = this.fromElement(document.createElement(this.TAG_NAME))
-    return text ? instance.withText(text) : instance
-  }
   static Element = EditorConsole.defineElement('editor-console')
 
   #element = null
@@ -53,7 +49,7 @@ class EditorConsole extends ComponentBase {
     $.setAttribute('tabindex', '0')
     $.focus()
 
-    nativeApi.load().then(text => {this.text = text})
+    editorJS.load().then(text => {this.text = text})
   }
 
   withText(text) {
@@ -108,7 +104,8 @@ class EditorConsole extends ComponentBase {
   }
 
   #dispatch(nativeEvent) {
-    const e = new Event(nativeEvent.type, {nativeEvent})
+    const e = new Event(nativeEvent.type, {cancelable: true})
+    e.nativeEvent = nativeEvent
     this.#eventTarget.dispatchEvent(e)
     return e
   }
@@ -162,7 +159,7 @@ class EditorConsole extends ComponentBase {
       return;
     if (e.key === 's' && e.ctrlKey) {
       e.preventDefault()
-      nativeApi.save(this.#text)
+      editorJS.save(this.#text)
       return;
     }
     if (PRINTABLE.test(e.key)) {
@@ -177,3 +174,5 @@ class EditorConsole extends ComponentBase {
   }
 
 }
+
+export default EditorConsole

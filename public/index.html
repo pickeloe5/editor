@@ -2,7 +2,22 @@
   <head>
     <title>Editor</title>
     <link rel='stylesheet' href='./style.css' />
-    <script type='module' src='./script/index.js'></script>
+    <script type='module'>
+      import EditorConsole from './script/index.js'
+      addEventListener('load', () => {
+        window.editorJSConsole =
+          EditorConsole.fromElement(
+            document.querySelector('editor-console'))
+        editorJS.getConfig().then(({scriptExists}) => {
+          if (!scriptExists)
+            return;
+          console.log(editorJSConsole)
+          const $ = document.createElement('script')
+          $.setAttribute('src', '../script.js')
+          document.head.appendChild($)
+        })
+      })
+    </script>
   </head>
   <body>
     <editor-console></editor-console>
