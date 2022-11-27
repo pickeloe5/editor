@@ -2,15 +2,11 @@
   "name": "editorJS",
   "version": "0.1.0",
   "main": "lib/index.js",
-  "scripts": {"start": "electron ."},
-  "devDependencies": {
-    "electron": "^21.3.0"
+  "scripts": {
+    "start": "electron .",
+    "build:asar": "asar p --unpack build --unpack-dir bin . bin/app.asar"
   },
-  "config": {"forge": {
-    "packagerConfig": {},
-    "makers": [{
-      "name": "@electron-forge/maker-squirrel",
-      "config": {"name": "editorJS"}
-    }]
-  }}
+  "devDependencies": {
+    "electron": "21.3.1"
+  }
 }

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+electronVersion=21.3.1
+
+# $1
+# targets=( \
+# darwin-arm64 darwin-x64 \
+# linux-arm64 linux-armv7l linux-x64 \
+# win32-arm64 win32-ia32 win32-x64 \
+# )
+
+mkdir bin/$1
+mkdir bin/$1/editorJS
+
+# Download and extract pre-built binaries
+preBuiltArchive=electron-v$electronVersion-$1.zip
+wget \
+https://github.com/electron/electron\
+/releases/download/v$electronVersion\
+/$preBuiltArchive
+unzip $preBuiltArchive -d bin/$1/editorJS
+rm $preBuiltArchive
+
+resourcesPath=resources
+# Rename application entry-point
+if [ "$2" = "w" ]
+then
+	mv bin/$1/editorJS/electron.exe bin/$1/editorJS/editorJS.exe
+elif [ "$2" = "m" ]
+then
+	mv bin/$1/editorJS/Electron.app bin/$1/editorJS/editorJS.app
+	resourcesPath=editorJS.app/Contents/Resources
+else
+	mv bin/$1/editorJS/electron bin/$1/editorJS/editorJS
+fi
+
+# Lift and shift app onto binary then compress
+rm -rf bin/$1/editorJS/$resourcesPath/default_app.asar
+cp bin/app.asar bin/$1/editorJS/$resourcesPath
+tar -C bin/$1 -czf bin/$1/editorJS.tar.gz editorJS
+rm -rf bin/$1/editorJS

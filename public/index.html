@@ -8,12 +8,11 @@
         window.editorJSConsole =
           EditorConsole.fromElement(
             document.querySelector('editor-console'))
-        editorJS.getConfig().then(({scriptExists}) => {
-          if (!scriptExists)
+        editorJS.getConfig().then(({scriptPath}) => {
+          if (!scriptPath)
             return;
-          console.log(editorJSConsole)
           const $ = document.createElement('script')
-          $.setAttribute('src', '../script.js')
+          $.setAttribute('src', scriptPath)
           document.head.appendChild($)
         })
       })

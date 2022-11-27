@@ -2,6 +2,10 @@ import {ComponentBase} from './fuffle.js'
 
 const PRINTABLE = /^[a-zA-Z0-9`~!@#$%^&*()\-_=+\[\]{}\\|;:'",.<>\/?\s]$/
 
+/**
+ * Renders and manipulates text
+ * @hideconstructor
+ */
 class EditorConsole extends ComponentBase {
 
   static TAG_NAME = 'editor-console'
@@ -52,9 +56,15 @@ class EditorConsole extends ComponentBase {
     editorJS.load().then(text => {this.text = text})
   }
 
+  /**
+   * Inserts text at the cursor.
+   * If no cursor is present, no text is inserted.
+   * @param {string} text - To be inserted
+   * @returns this
+   */
   withText(text) {
     if (!this.#isFocused)
-      return;
+      return this
     this.#text =
       this.#text.substring(0, this.#cursor) +
       text +
@@ -64,9 +74,15 @@ class EditorConsole extends ComponentBase {
     return this
   }
 
+  /**
+   * Removes text at the cursor.
+   * If no cursor is present, no text is removed.
+   * @param {number} length - To be removed
+   * @returns this
+   */
   withoutText(length = 1) {
     if (!this.#isFocused)
-      return;
+      return this
     this.#text =
       this.#text.substring(0, this.#cursor - length) +
       this.#text.substring(this.#cursor)
@@ -75,11 +91,27 @@ class EditorConsole extends ComponentBase {
     return this
   }
 
+  /**
+   * Adds an event handler to this target.
+   * @param {string} eventType
+   * @param {function} handler
+   * @param {object} options
+   * @returns this
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+   */
   on(eventType, handler, options) {
     this.#eventTarget.addEventListener(eventType, handler, options)
     return this
   }
 
+  /**
+   * Removes an event handler from this target.
+   * @param {string} eventType
+   * @param {function} handler
+   * @param {object} options
+   * @returns this
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
+   */
   off(eventType, handler, options) {
     this.#eventTarget.removeEventListener(eventType, handler, options)
     return this
